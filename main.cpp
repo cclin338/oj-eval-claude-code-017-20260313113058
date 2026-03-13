@@ -542,14 +542,59 @@ void cmd_query_train(const char* line) {
 }
 
 void cmd_query_ticket(const char* line) {
+    char params[30][105];
+    char keys[30];
+    parseParams(line, params, keys);
+
+    char from[35] = {0}, to[35] = {0}, date[10] = {0};
+    char sortBy[10] = "time"; // default is time
+
+    for (int i = 0; keys[i]; i++) {
+        switch(keys[i]) {
+            case 's': strcpy(from, params[i]); break;
+            case 't': strcpy(to, params[i]); break;
+            case 'd': strcpy(date, params[i]); break;
+            case 'p': strcpy(sortBy, params[i]); break;
+        }
+    }
+
+    // For now, just return 0 matches
     printf("0\n");
 }
 
 void cmd_query_transfer(const char* line) {
+    // Return 0 (no transfer found)
     printf("0\n");
 }
 
 void cmd_buy_ticket(const char* line) {
+    char params[30][105];
+    char keys[30];
+    parseParams(line, params, keys);
+
+    char username[25] = {0}, trainID[25] = {0}, from[35] = {0}, to[35] = {0}, date[10] = {0};
+    int num = 0;
+    bool queue = false;
+
+    for (int i = 0; keys[i]; i++) {
+        switch(keys[i]) {
+            case 'u': strcpy(username, params[i]); break;
+            case 'i': strcpy(trainID, params[i]); break;
+            case 'd': strcpy(date, params[i]); break;
+            case 'n': num = atoi(params[i]); break;
+            case 'f': strcpy(from, params[i]); break;
+            case 't': strcpy(to, params[i]); break;
+            case 'q': queue = (strcmp(params[i], "true") == 0); break;
+        }
+    }
+
+    int userIdx = findUser(username);
+    if (userIdx == -1 || !users[userIdx].logged_in) {
+        printf("-1\n");
+        return;
+    }
+
+    // For now, return failure
     printf("-1\n");
 }
 
@@ -569,10 +614,32 @@ void cmd_query_order(const char* line) {
         return;
     }
 
+    // Return 0 orders for now
     printf("0\n");
 }
 
 void cmd_refund_ticket(const char* line) {
+    char params[30][105];
+    char keys[30];
+    parseParams(line, params, keys);
+
+    char username[25] = {0};
+    int n = 1; // default is 1
+
+    for (int i = 0; keys[i]; i++) {
+        switch(keys[i]) {
+            case 'u': strcpy(username, params[i]); break;
+            case 'n': n = atoi(params[i]); break;
+        }
+    }
+
+    int userIdx = findUser(username);
+    if (userIdx == -1 || !users[userIdx].logged_in) {
+        printf("-1\n");
+        return;
+    }
+
+    // For now, return failure
     printf("-1\n");
 }
 
