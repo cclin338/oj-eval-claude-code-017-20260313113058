@@ -184,6 +184,10 @@ void cmd_add_user(const char* line) {
 
     if (userCount == 0) {
         // First user
+        if (userCount >= MAX_USERS) {
+            printf("-1\n");
+            return;
+        }
         User& u = users[userCount++];
         strcpy(u.username, username);
         strcpy(u.password, password);
@@ -198,6 +202,11 @@ void cmd_add_user(const char* line) {
 
     int curIdx = findUser(cur_username);
     if (curIdx == -1 || !users[curIdx].logged_in || privilege >= users[curIdx].privilege) {
+        printf("-1\n");
+        return;
+    }
+
+    if (userCount >= MAX_USERS) {
         printf("-1\n");
         return;
     }
@@ -401,6 +410,11 @@ void cmd_add_train(const char* line) {
     }
 
     if (findTrain(t.trainID) != -1) {
+        printf("-1\n");
+        return;
+    }
+
+    if (trainCount >= MAX_TRAINS) {
         printf("-1\n");
         return;
     }
