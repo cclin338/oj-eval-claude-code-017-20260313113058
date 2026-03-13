@@ -34,8 +34,7 @@ struct Train {
     bool released;
     bool exists;
 
-    // Seat availability per date per segment
-    int seats[100][MAX_STATIONS]; // [date][segment]
+    // Don't store seat availability - compute on demand or use file storage
 };
 
 // Order structure
@@ -406,13 +405,6 @@ void cmd_add_train(const char* line) {
         return;
     }
 
-    // Initialize seats
-    for (int d = 0; d < 100; d++) {
-        for (int s = 0; s < t.stationNum; s++) {
-            t.seats[d][s] = t.seatNum;
-        }
-    }
-
     t.released = false;
     t.exists = true;
     trains[trainCount++] = t;
@@ -521,7 +513,8 @@ void cmd_query_train(const char* line) {
             minutesToTime(depMin, depTime);
         }
 
-        int seat = (i < t.stationNum - 1) ? t.seats[day][i] : 0;
+        // For now, always show full seatNum available (no bookings tracked)
+        int seat = (i < t.stationNum - 1) ? t.seatNum : 0;
 
         printf("%s %s %s -> %s %s %d ", t.stations[i], arrDate, arrTime, depDate, depTime, cumPrice);
         if (i == t.stationNum - 1) {
